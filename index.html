@@ -26,6 +26,21 @@
   .brand-title { font-size: 18px; font-weight: 700; color: var(--ink); }
   .brand-sub { font-size: 13px; color: var(--muted); margin-top: 2px; }
   .user-pill { background: var(--olive-light); color: var(--olive-dark); padding: 8px 18px; border-radius: 999px; font-size: 14px; font-weight: 600; }
+  .top-left { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; }
+  .stamp { font-size: 11px; color: var(--muted); }
+  .nav-links { display: flex; gap: 4px; flex-wrap: wrap; }
+  .nav-links a { color: var(--olive-dark); text-decoration: none; font-size: 14px; font-weight: 600; padding: 7px 14px; border-radius: 999px; transition: background 0.15s, color 0.15s; }
+  .nav-links a:hover { background: var(--olive-light); }
+  .nav-links a.active-link { background: var(--olive-dark); color: white; }
+  .today-list { background: var(--card); border-radius: 14px; border: 1px solid var(--line); overflow: hidden; margin-bottom: 36px; box-shadow: 0 2px 10px rgba(74,79,46,0.05); }
+  .today-row { display: flex; align-items: center; gap: 16px; padding: 14px 22px; border-bottom: 1px solid var(--line); }
+  .today-row:last-child { border-bottom: none; }
+  .today-days { min-width: 92px; text-align: center; padding: 6px 10px; border-radius: 999px; font-size: 13px; font-weight: 700; background: var(--olive-light); color: var(--olive-dark); }
+  .today-days.soon { background: #E8B45A; color: #5A3E00; }
+  .today-days.today { background: #C97B3C; color: white; }
+  .today-title { font-weight: 600; font-size: 15px; color: var(--ink); }
+  .today-date { font-size: 13px; color: var(--muted); margin-top: 2px; }
+  .today-empty { padding: 18px 22px; color: var(--muted); font-style: italic; font-size: 14px; }
   .container { max-width: 1200px; margin: 0 auto; padding: 40px 32px; }
   .breadcrumb { font-size: 14px; color: var(--muted); margin-bottom: 24px; display: flex; gap: 8px; align-items: center; }
   .breadcrumb a { color: var(--olive); text-decoration: none; cursor: pointer; }
@@ -86,6 +101,13 @@
     .brand-title { font-size: 14px; }
     .brand-sub { font-size: 11px; }
     .user-pill { display: none; }
+    .topbar { flex-wrap: wrap; gap: 8px; }
+    .nav-links { order: 3; width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 2px; }
+    .nav-links a { font-size: 13px; padding: 6px 11px; white-space: nowrap; }
+    .stamp { font-size: 10px; }
+    .today-row { padding: 12px 14px; gap: 10px; }
+    .today-days { min-width: 76px; font-size: 12px; }
+    .today-title { font-size: 14px; }
     .container { padding: 16px 12px; }
     h1 { font-size: 22px; }
     h2 { font-size: 17px; margin: 20px 0 10px; }
@@ -114,7 +136,17 @@
       <div class="brand-sub">סוכן אישי — הנדסה אזרחית · מחלקת ניהול תכנון</div>
     </div>
   </div>
-  <div class="user-pill">עידן כהן</div>
+  <nav class="nav-links">
+    <a href="#home">ראשי</a>
+    <a href="#modiin">מודיעין מרכז</a>
+    <a href="#netbag">נתב״ג</a>
+    <a href="#modiin-ilit">מודיעין עילית</a>
+    <a href="#k44">כביש 44</a>
+  </nav>
+  <div class="top-left">
+    <div class="user-pill">עידן כהן</div>
+    <div class="stamp">עודכן לאחרונה: <span id="lu"></span></div>
+  </div>
 </div>
 
 <div class="container">
@@ -122,6 +154,9 @@
   <div class="page active" id="home">
     <h1>סקירה כללית</h1>
     <div class="page-sub">פרויקטים פעילים במחלקת ניהול תכנון</div>
+    <h2 style="margin-top:0;">תאריכים קרובים</h2>
+    <div class="today-list" id="upcoming-list"></div>
+    <h2>פרויקטים</h2>
     <div class="projects-grid">
       <a class="project-card" href="#modiin">
         <h3>תחנת מודיעין מרכז — הגדלת קיבולת</h3>
@@ -325,6 +360,51 @@
     history.replaceState({page: id}, '', '#' + id);
     showPage(id);
   });
+
+  // ===== חותמת "עודכן לאחרונה" — נכתבת אוטומטית ע"י sync-dashboard.js =====
+  const LAST_UPDATED = '10.06.26';
+  document.getElementById('lu').textContent = LAST_UPDATED;
+
+  // ===== תאריכים קרובים — מתוחזק ע"י העוזר, רק מועדים ודאיים =====
+  // פורמט: { d: 'YYYY-MM-DD', t: 'תיאור', p: 'שם פרויקט' }
+  const UPCOMING = [
+    { d: '2026-06-14', t: 'פגישת המשך מיגון וביטחון מול תומר גלפנד', p: 'מודיעין מרכז' },
+    { d: '2026-06-22', t: 'ועדת היגוי תכנון ראשוני מסילות + מוקדם-ראשוני תחנה', p: 'נתב״ג' },
+  ];
+  (function renderUpcoming() {
+    var box = document.getElementById('upcoming-list');
+    if (!box) return;
+    var today = new Date(); today.setHours(0,0,0,0);
+    var items = UPCOMING
+      .map(function(it){ return { date: new Date(it.d + 'T00:00:00'), t: it.t, p: it.p }; })
+      .filter(function(it){ return it.date >= today; })
+      .sort(function(a,b){ return a.date - b.date; });
+    if (items.length === 0) {
+      box.innerHTML = '<div class="today-empty">אין תאריכים קרובים ביומן.</div>';
+      return;
+    }
+    box.innerHTML = items.map(function(it){
+      var days = Math.round((it.date - today) / 86400000);
+      var label, cls;
+      if (days === 0) { label = 'היום'; cls = 'today'; }
+      else if (days === 1) { label = 'מחר'; cls = 'soon'; }
+      else { label = 'בעוד ' + days + ' ימים'; cls = days <= 3 ? 'soon' : ''; }
+      var dd = String(it.date.getDate()).padStart(2,'0') + '.' + String(it.date.getMonth()+1).padStart(2,'0') + '.' + String(it.date.getFullYear()).slice(2);
+      return '<div class="today-row"><div class="today-days ' + cls + '">' + label + '</div>' +
+             '<div><div class="today-title">' + it.p + ' — ' + it.t + '</div>' +
+             '<div class="today-date">' + dd + '</div></div></div>';
+    }).join('');
+  })();
+
+  // ===== הדגשת הקישור הפעיל בניווט העליון =====
+  function markNav(id) {
+    document.querySelectorAll('.nav-links a').forEach(function(a){
+      a.classList.toggle('active-link', a.getAttribute('href') === '#' + id);
+    });
+  }
+  var origShowPage = showPage;
+  showPage = function(id) { origShowPage(id); markNav(id); };
+  markNav(location.hash.replace('#','') || 'home');
 </script>
 
 </body>
