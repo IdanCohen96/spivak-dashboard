@@ -228,7 +228,7 @@
     <div class="page-sub">מעקב תיאום מול הרפרנטים ברכבת ישראל ובגופים הקשורים</div>
     <div style="background:var(--card); border:1px solid var(--line); border-radius:12px; padding:24px; margin-bottom:24px;">
       <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
-        <div><div style="font-size:13px; color:var(--muted); margin-bottom:4px;">סטטוס נוכחי · עודכן 08.06.26</div><div style="font-size:24px; font-weight:700; color:var(--olive-dark);">12 מתוך 23 רפרנטים אושרו</div></div>
+        <div><div style="font-size:13px; color:var(--muted); margin-bottom:4px;">סטטוס נוכחי · עודכן 15.06.26</div><div style="font-size:24px; font-weight:700; color:var(--olive-dark);">12 מתוך 23 רפרנטים אושרו</div></div>
         <div style="display:flex; gap:10px;"><span class="pill pill-approved">מאושר: 12</span><span class="pill pill-progress">בתהליך: 11</span></div>
       </div>
       <div class="progress-wrap" style="margin-top:18px;"><div class="progress-track"><div class="progress-fill" style="width:52%;"></div></div></div>
@@ -362,7 +362,7 @@
   });
 
   // ===== חותמת "עודכן לאחרונה" — נכתבת אוטומטית ע"י sync-dashboard.js =====
-  const LAST_UPDATED = '14.06.26';
+  const LAST_UPDATED = '15.06.26';
   document.getElementById('lu').textContent = LAST_UPDATED;
 
   // ===== תאריכים קרובים — מתוחזק ע"י העוזר, רק מועדים ודאיים =====
@@ -370,6 +370,7 @@
   const UPCOMING = [
     { d: '2026-07-13', t: 'ועדת היגוי תכנון ראשוני מסילות + מוקדם-ראשוני תחנה', p: 'נתב״ג' },
     { d: '2026-06-29', t: 'פגישה עם ילנה זובארב, נורית בינה ואביהו יצהרי - הנחיות לתכנון חריג לרוחב הרציף המערבי (נגישות)', p: 'מודיעין מרכז' },
+    { d: '2026-07-20', t: 'פגישת המשך עם תומר גלפנד - סיום הדיון על החניון (מיגון)', p: 'מודיעין מרכז' },
   ];
   (function renderUpcoming() {
     var box = document.getElementById('upcoming-list');
