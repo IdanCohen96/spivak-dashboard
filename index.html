@@ -440,7 +440,6 @@
     if (!el) return;
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     el.classList.add('active');
-    window.scrollTo({top: 0, behavior: 'smooth'});
   }
 
   function goto(id) {
