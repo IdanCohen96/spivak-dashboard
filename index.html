@@ -94,6 +94,9 @@
   @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
   .back-btn { display: inline-flex; align-items: center; gap: 8px; background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 8px 16px; font-size: 14px; font-weight: 600; color: var(--olive-dark); cursor: pointer; margin-bottom: 20px; transition: all 0.15s; }
   .back-btn:hover { border-color: var(--olive); background: var(--olive-light); }
+  .sav-btn { background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 6px 16px; font-size: 13px; font-weight: 600; color: var(--olive-dark); cursor: pointer; font-family: inherit; transition: all 0.15s; }
+  .sav-btn:hover { border-color: var(--olive); background: var(--olive-light); }
+  .active-sav { background: var(--olive-dark); color: white; border-color: var(--olive-dark); }
   footer { text-align: center; padding: 32px; color: var(--muted); font-size: 13px; border-top: 1px solid var(--line); margin-top: 60px; }
   @media (max-width: 700px) {
     .topbar { padding: 10px 14px; }
@@ -172,6 +175,46 @@
         <h3>כביש 44 - מקטע ניר צבי רמלה</h3>
       </a>
     </div>
+    <h2>חיסכון שעות עבודה</h2>
+    <div id="savings-section" style="background:var(--card);border-radius:14px;border:1px solid var(--line);padding:24px 28px;margin-bottom:36px;box-shadow:0 2px 10px rgba(74,79,46,0.05);">
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;">
+        <button class="sav-btn active-sav" onclick="showSavings(30,this)">30 יום</button>
+        <button class="sav-btn" onclick="showSavings(90,this)">3 חודשים</button>
+        <button class="sav-btn" onclick="showSavings(180,this)">חצי שנה</button>
+        <button class="sav-btn" onclick="showSavings(365,this)">שנה</button>
+        <button class="sav-btn" onclick="showSavings(730,this)">שנתיים</button>
+      </div>
+      <div style="display:flex;gap:32px;flex-wrap:wrap;align-items:center;">
+        <div style="text-align:center;">
+          <div id="sav-hours" style="font-size:48px;font-weight:800;color:var(--olive-dark);">—</div>
+          <div style="font-size:14px;color:var(--muted);">שעות נחסכו</div>
+        </div>
+        <div style="text-align:center;">
+          <div id="sav-tasks" style="font-size:48px;font-weight:800;color:var(--olive);">—</div>
+          <div style="font-size:14px;color:var(--muted);">משימות שבוצעו</div>
+        </div>
+        <div style="text-align:center;">
+          <div id="sav-range" style="font-size:16px;font-weight:600;color:var(--muted);">—</div>
+          <div style="font-size:13px;color:var(--muted);">טווח תאריכים</div>
+        </div>
+      </div>
+      <div style="margin-top:16px;">
+        <button onclick="toggleDetail()" style="background:none;border:1px solid var(--line);border-radius:6px;padding:6px 14px;cursor:pointer;font-family:inherit;font-size:13px;color:var(--olive-dark);font-weight:600;">הצג פירוט ←</button>
+      </div>
+      <div id="sav-detail" style="display:none;margin-top:14px;border-top:1px solid var(--line);padding-top:14px;">
+        <table id="sav-table" style="width:100%;border-collapse:collapse;font-size:13px;direction:rtl;">
+          <thead><tr style="background:#f5f5ed;">
+            <th style="padding:8px 10px;text-align:right;border-bottom:2px solid var(--line);">משימה</th>
+            <th style="padding:8px 10px;text-align:right;border-bottom:2px solid var(--line);">פרויקט</th>
+            <th style="padding:8px 10px;text-align:center;border-bottom:2px solid var(--line);">ידני (שעות)</th>
+            <th style="padding:8px 10px;text-align:center;border-bottom:2px solid var(--line);">עם סוכן (שעות)</th>
+            <th style="padding:8px 10px;text-align:center;border-bottom:2px solid var(--line);">חיסכון</th>
+          </tr></thead>
+          <tbody id="sav-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
     <h2>כללי</h2>
     <div class="projects-grid">
       <a class="project-card" href="#learning">
@@ -588,6 +631,62 @@
   var origShowPage = showPage;
   showPage = function(id) { origShowPage(id); markNav(id); };
   markNav(location.hash.replace('#','') || 'home');
+
+  // ===== חישוב חיסכון שעות עבודה =====
+  var SAVINGS = [
+    { date:'2026-06-03', task:'למידת מבנה חשבונות דאל (חשבון חלקי 12)', project:'מודיעין מרכז', manual:3, agent:0.5 },
+    { date:'2026-06-03', task:'למידת מבנה בקשות הגדלת שכ"ט', project:'מודיעין מרכז', manual:2, agent:0.3 },
+    { date:'2026-06-03', task:'איחוד רשימות תכניות למכרז (4 מתכננים)', project:'כביש 44', manual:6, agent:1 },
+    { date:'2026-06-04', task:'השלמת איחוד רשימות תכניות + הצלבה מול קבצים', project:'כביש 44', manual:4, agent:0.5 },
+    { date:'2026-06-07', task:'למידת פרויקט נתב"ג — מצגת מידן, רפרנטים, שלביות', project:'נתב"ג', manual:4, agent:1 },
+    { date:'2026-06-07', task:'כתיבת סיכום ישיבת חישמול (07.06.26)', project:'נתב"ג', manual:2, agent:0.3 },
+    { date:'2026-06-08', task:'כתיבת סיכום ישיבת איתות וטכנולוגיה (08.06.26)', project:'נתב"ג', manual:2, agent:0.3 },
+    { date:'2026-06-10', task:'ניתוח לוז מנהלים נתב"ג + כתיבת 10 פרקי הערות', project:'נתב"ג', manual:5, agent:1.5 },
+    { date:'2026-06-10', task:'למידת עקרונות לוחות זמנים (מלוז רג"מ)', project:'כללי', manual:3, agent:0.5 },
+    { date:'2026-06-10', task:'סיכום פגישת איסוף נתונים מודיעין עילית (31.05.26)', project:'מודיעין עילית', manual:1.5, agent:0.3 },
+    { date:'2026-06-14', task:'עדכון אבני דרך בלוז + תיקון מועד ועדת היגוי', project:'נתב"ג', manual:0.5, agent:0.1 },
+    { date:'2026-06-15', task:'למידת מחירון נת"י — מבנה פרקים ושימושים', project:'כללי', manual:2, agent:0.3 },
+    { date:'2026-06-15', task:'בניית דשבורד ניהולי (מחשב + נייד)', project:'כללי', manual:8, agent:2 },
+    { date:'2026-06-17', task:'חישוב שכ"ט לפי שעות — יומני אלונה, נטלי ועידן', project:'נתב"ג', manual:4, agent:0.5 },
+    { date:'2026-06-22', task:'דוח מצב רפרנטים מודיעין (קריאת אקסל + סיכום)', project:'מודיעין מרכז', manual:1.5, agent:0.1 },
+    { date:'2026-06-22', task:'הערכת מיומנויות מול סילבוס קורס AI', project:'כללי', manual:1.5, agent:0.3 },
+    { date:'2026-06-22', task:'מדריך מונחי בינה מלאכותית (קובץ וורד)', project:'כללי', manual:2, agent:0.3 },
+    { date:'2026-06-22', task:'מדריך הצגה למנהל', project:'כללי', manual:2, agent:0.3 },
+    { date:'2026-06-22', task:'עדכוני דשבורד (מנהל פרויקט נתב"ג, למידה, הצגה)', project:'כללי', manual:1, agent:0.2 },
+  ];
+
+  function showSavings(days, btn) {
+    document.querySelectorAll('.sav-btn').forEach(function(b){ b.classList.remove('active-sav'); });
+    if (btn) btn.classList.add('active-sav');
+    var cutoff = new Date();
+    cutoff.setDate(cutoff.getDate() - days);
+    var filtered = SAVINGS.filter(function(s){ return new Date(s.date) >= cutoff; });
+    var totalManual = 0, totalAgent = 0;
+    filtered.forEach(function(s){ totalManual += s.manual; totalAgent += s.agent; });
+    var saved = totalManual - totalAgent;
+    document.getElementById('sav-hours').textContent = saved.toFixed(1);
+    document.getElementById('sav-tasks').textContent = filtered.length;
+    var from = new Date(cutoff); from.setDate(from.getDate()+1);
+    var fmt = function(d){ return String(d.getDate()).padStart(2,'0')+'.'+String(d.getMonth()+1).padStart(2,'0')+'.'+String(d.getFullYear()).toString().slice(2); };
+    document.getElementById('sav-range').textContent = fmt(cutoff) + ' — ' + fmt(new Date());
+    var tbody = document.getElementById('sav-tbody');
+    tbody.innerHTML = filtered.map(function(s){
+      var sv = (s.manual - s.agent).toFixed(1);
+      return '<tr style="border-bottom:1px solid #eee;">' +
+        '<td style="padding:6px 10px;">' + s.task + '</td>' +
+        '<td style="padding:6px 10px;">' + s.project + '</td>' +
+        '<td style="padding:6px 10px;text-align:center;">' + s.manual + '</td>' +
+        '<td style="padding:6px 10px;text-align:center;">' + s.agent + '</td>' +
+        '<td style="padding:6px 10px;text-align:center;font-weight:700;color:#4A4F2E;">' + sv + '</td></tr>';
+    }).join('');
+  }
+
+  function toggleDetail() {
+    var el = document.getElementById('sav-detail');
+    el.style.display = el.style.display === 'none' ? 'block' : 'none';
+  }
+
+  showSavings(30);
 </script>
 
 </body>
