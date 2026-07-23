@@ -174,6 +174,9 @@
       <a class="project-card" href="#k44">
         <h3>כביש 44 - מקטע ניר צבי רמלה</h3>
       </a>
+      <a class="project-card" href="#redline">
+        <h3>הקו האדום — הארכה והקמת מתחם דיפו</h3>
+      </a>
     </div>
     <h2>חיסכון שעות עבודה</h2>
     <div id="savings-section" style="background:var(--card);border-radius:14px;border:1px solid var(--line);padding:24px 28px;margin-bottom:36px;box-shadow:0 2px 10px rgba(74,79,46,0.05);">
@@ -675,6 +678,32 @@
     </div>
   </div>
 
+  <div class="page" id="redline">
+    <div class="breadcrumb"><a href="#home">סקירה כללית</a><span>›</span><span>הקו האדום</span></div>
+    <a class="back-btn" href="#home">→ חזרה לדף הראשי</a>
+    <h1>הקו האדום — הארכה והקמת מתחם דיפו</h1>
+    <div class="page-sub">שירותי ניהול פרויקט להארכת הקו האדום והקמת מתחם דיפו · מזמין: נת"ע</div>
+    <div class="menu-grid">
+      <a class="menu-card" href="#redline-risk">
+        <h4>מסמך ניהול סיכונים</h4>
+        <div class="desc">תכנית ניהול סיכונים לפי תבנית הקו הסגול, מותאמת לעובדות הפרויקט מהחוזה</div>
+        <div class="count">1 מסמך</div>
+      </a>
+    </div>
+  </div>
+
+  <div class="page" id="redline-risk">
+    <div class="breadcrumb"><a href="#home">סקירה כללית</a><span>›</span><a href="#redline">הקו האדום</a><span>›</span><span>מסמך ניהול סיכונים</span></div>
+    <a class="back-btn" href="#redline">→ חזרה לתפריט הקו האדום</a>
+    <h1>מסמך ניהול סיכונים</h1>
+    <div class="file-list">
+      <div class="file-row">
+        <div class="file-info"><div class="file-name">RL- Risk Management Plan</div><div class="file-meta">קובץ וורד · טיוטה ראשונה, 23.07.26 · ממתין להערות עידן (מספר בקרת-מסמך וטבלת מאשרים עדיין placeholder)</div></div>
+        <a class="file-link" href="#" onclick="openInOffice('https://spivakcoil-my.sharepoint.com/personal/idanc_spivak_co_il/Documents/%D7%A1%D7%A4%D7%99%D7%91%D7%A7/%D7%A1%D7%95%D7%9B%D7%9F%20%D7%90%D7%99%D7%A9%D7%99%20-%20%D7%94%D7%A0%D7%93%D7%A1%D7%94%20%D7%90%D7%96%D7%A8%D7%97%D7%99%D7%AA/%D7%94%D7%A7%D7%95%20%D7%94%D7%90%D7%93%D7%95%D7%9D/%D7%9E%D7%A1%D7%9E%D7%9A%20%D7%A0%D7%99%D7%94%D7%95%D7%9C%20%D7%A1%D7%99%D7%9B%D7%95%D7%A0%D7%99%D7%9D/RL-%20Risk%20Management%20Plan.docx'); return false;">פתח</a>
+      </div>
+    </div>
+  </div>
+
   <div class="page" id="presentation">
     <div class="breadcrumb"><a href="#home">סקירה כללית</a><span>›</span><span>הצגה למנהל</span></div>
     <a class="back-btn" href="#home">→ חזרה לדף הראשי</a>
@@ -766,7 +795,7 @@
   });
 
   // ===== חותמת "עודכן לאחרונה" — נכתבת אוטומטית ע"י sync-dashboard.js =====
-  const LAST_UPDATED = '21.07.26';
+  const LAST_UPDATED = '23.07.26';
   document.getElementById('lu').textContent = LAST_UPDATED;
 
   // ===== תאריכים קרובים — מתוחזק ע"י העוזר, רק מועדים ודאיים =====
@@ -882,6 +911,9 @@
     { date:'2026-07-14', task:'חזרה לפרופיל חתך אחיד במנהרה (חתכים משתנים דרמטית על מרחק קצר יצרו מפרקים מכוערים בכל טכניקת-מעבר שנוסתה) + תיקון אי-התאמה בין מפרקי-הטבעות לקיר', project:'מודיעין מרכז', manual:3, agent:1.5 },
     { date:'2026-07-21', task:'עדכון טבלת תיאום רפרנטים (נגישות) — העברת מכתב מרוכז לאישור אביהו יצהרי, בשתי לשוניות + מונה + צבעים', project:'מודיעין מרכז', manual:0.5, agent:0.1 },
     { date:'2026-07-21', task:'איתור ותיקון באג קריטי בדשבורד: מרכאה בודדת לא-נמלטת בטקסט עברי שברה את כל קוד ה-JavaScript בעמוד (השבתת ניווט, פתיחת קבצים וחישוב שעות שנחסכו) + השלמת קבצים חסרים (סיכום 16.07.26, עדכון פיצויי איחור) + בדיקת תקינות תחבירית מכנית', project:'כללי', manual:3, agent:0.7 },
+    { date:'2026-07-21', task:'תיקון מיקום ריהוט רציף (ספסלים) שחתך את פס-האזהרה הצהוב במודל התלת-ממדי — אבחון מדויק מול נתוני-אמת, בניית ספסל ריאליסטי (מושב+משענת+רגליים) במקום קופסה, מיקום מחדש בין עמודים מאומתים', project:'מודיעין מרכז', manual:3, agent:1 },
+    { date:'2026-07-23', task:'עדכון מעקב חשבונות מתכננים נתב"ג — אישור חשבון 3 (מוססקו) לפי צילום מסך רמדור', project:'נתב"ג', manual:0.3, agent:0.1 },
+    { date:'2026-07-23', task:'בניית טיוטת תכנית ניהול סיכונים לפרויקט הקו האדום — קריאת תכנית ייחוס (הקו הסגול, 14 עמ׳), חוזה (144 עמ׳) ושיחת ייעוץ קודמת, שילוב עובדות פרויקט אמיתיות + הרחבת פרקים תפעוליים (SAP, זרימת מידע, תפקידים), אבחון ותיקון באג מבני קריטי ב-Word (14→47 עמ׳), אימות חזותי מלא', project:'הקו האדום', manual:14, agent:2.5 },
   ];
 
   function showSavings(days, btn) {
